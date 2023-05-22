@@ -1,0 +1,64 @@
+import tensorflow as tf
+from tensorflow.keras.datasets import boston_housing
+from sklearn import preprocessing
+
+
+(train_x, train_y), (test_x, test_y) = boston_housing.load_data()
+#data = boston_housing.load_data()
+#print(data[0])
+
+
+print("Train shape: ", train_x.shape)
+print("Test Shape: ", test_x.shape)
+print("Actual Train output: ", train_y.shape)
+print("Actual Test output: ", test_y.shape)
+
+
+train_x[0]
+
+
+train_y[0]
+
+
+train_x = preprocessing.normalize(train_x)
+test_x = preprocessing.normalize(test_x)
+
+train_x[0]
+
+
+train_y[0]
+
+
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import *
+
+def HousePricePredictionModel():
+    model = Sequential()
+    model.add(Dense(128, activation="relu", input_shape=(train_x[0].shape)))
+    model.add(Dense(64, activation="relu"))
+    model.add(Dense(32, activation="relu"))
+    model.add(Dense(1))
+    model.compile(optimizer="rmsprop", loss="mse", metrics=["mae"])
+    return model
+
+
+
+import numpy as np
+k = 4
+num_val_samples = len(train_x)
+num_epochs = 101
+all_scores = []
+
+
+
+model = HousePricePredictionModel()
+history = model.fit(x=train_x, y=train_y, epochs=num_epochs, batch_size=1, verbose=1, validation_data=(test_x, test_y))
+
+
+
+test_input = np.array([0.00632,18.0,2.31,0,0.538,6.575,65.2,4.0900,1,296.0,15.3,396.9,4.98])
+
+test_input = preprocessing.normalize([test_input])
+print("Actual output: 24.0")
+print("predicted Output: ", model.predict(test_input))
